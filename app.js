@@ -6,13 +6,12 @@ const consultationRoutes = require('./routes/ConsultationRoute');
 const medicationRoutes = require('./routes/MedicationRoute');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.use('/api/consultation', consultationRoutes);
 app.use('/api/medication', medicationRoutes);
 
-app.use(express.json());
 app.listen(3000);
-app.use(bodyParser.json());
 app.use(cors());
 
 app.use(cors({credentials: true, origin: 'http://localhost:4200'}));

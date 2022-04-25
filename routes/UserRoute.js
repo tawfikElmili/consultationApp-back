@@ -69,11 +69,12 @@ console.log(req.body);
 
         role: req.body.role,
     });
-    console.log(user);
     try {
         const newUser = await User.find({ email: req.body.email });
         if (newUser === undefined || newUser.length == 0) {
             user = await user.save();
+            
+            console.log("ezebi");
             res.json({ status: "ok", message: 'Account Create ! You can now Login' });
             return;
         }
