@@ -9,7 +9,7 @@ var medicationSchema = new mongoose.Schema({
     designation: {
         type: String,
     },
-    repetition: {
+    note: {
         type: String,
     },
 

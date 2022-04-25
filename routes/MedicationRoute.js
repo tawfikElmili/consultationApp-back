@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Consultation = require('../models/Consultation');
+const Medication = require('../models/Medication');
 var jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
@@ -23,12 +23,12 @@ function verifyToken(req, res, next) {
 
 router.post('/add', verifyToken, async (req, res) => {
     try {
-        let consultation = new Consultation({
-            userId: req.id,
-            observaton: req.body.observaton,
-            description: req.body.description,
+        let medication = new Medication({
+            consultationId: req.body.consultationId,
+            designation: req.body.designation,
+            note: req.body.note,
         });
-        consultation = await consultation.save();
+        await medication.save();
 
         res.json({ status: "ok", message: 'Consultation add to DataBase' });
     } catch (err) {
@@ -37,42 +37,42 @@ router.post('/add', verifyToken, async (req, res) => {
 
 });
 
-router.get('/all', verifyToken, async (req, res) => {
+router.post('/all', verifyToken, async (req, res) => {
     try {
-        const consultation = await Consultation.find({ userId: req.id }
+        const medications = await Medication.find({ consultationId: req.body.consultationId }
         );
+        res.json(medications);
 
-        res.json(consultation);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
+});
 
+router.post('/update', verifyToken, async (req, res) => {
+    try {
+        const medication = await Medications.findById({ _id: req.body.id });
+
+        if (req.body.designation != null) {
+            consultation.designation = req.body.designation;
+        }
+        if (req.body.note != null) {
+            consultation.note = req.body.note;
+        }
+        medication.save();
+        res.json(medication);
     } catch (err) {
         res.json({ message: err.message });
 
     }
-
 });
-
-router.post('/update', verifyToken, async (req, res) => {
-
-    const consultation = await Consultation.findById({ _id: req.body.id });
-
-    if (req.body.observation != null) {
-        consultation.observation = req.body.observation;
-    }
-    if (req.body.description != null) {
-        consultation.description = req.body.description;
-    }
-    consultation.save();
-    await res.json(consultation);
-});
-
 
 router.delete('/Consultation/delete/:id', (req, res) => {
 
-    Consultation.findByIdAndRemove(req.params.id)
-        .then(consultation => {
-            if (!consultation) {
+    Medication.findByIdAndRemove(req.params.id)
+        .then(medication => {
+            if (!medication) {
                 return res.status(404).send({
-                    message: "sensor not found with code " + req.params.id
+                    message: " error in update with id : " + req.params.id
                 });
             }
         })
