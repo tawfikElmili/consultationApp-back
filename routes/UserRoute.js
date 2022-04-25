@@ -57,14 +57,17 @@ router.post('/login', async (req, res) => {
 
 // register
 router.post('/register', async (req, res) => {
-
+console.log(req.body);
     const encryptedPWD = cryptr.encrypt(req.body.password);
     let user = new User({
-
-        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         password: encryptedPWD,
         numTel: req.body.numTel,
+        status: req.body.status,
+
+        role: req.body.role,
     });
     console.log(user);
     try {
