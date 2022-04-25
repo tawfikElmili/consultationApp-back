@@ -5,7 +5,9 @@ var ConsultationSchema = new mongoose.Schema({
     userId: {
         type: String,
     },
-
+    userAffectId: {
+        type: String,
+    },
     observation: {
         type: String,
     },

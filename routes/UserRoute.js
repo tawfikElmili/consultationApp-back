@@ -45,7 +45,7 @@ router.post('/login', async (req, res) => {
         var payload = {
             id: newUser[0]._id,
         }
-        let token = jwt.sign(payload, 'omayma');
+        let token = jwt.sign(payload, 'fakroun');
         res.json({ status: "ok", message: 'Welcome Back', UserData: newUser, token });
     } catch (err) {
         res.header("Access-Control-Allow-Headers", "*");

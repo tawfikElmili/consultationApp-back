@@ -21,7 +21,7 @@ function verifyToken(req, res, next) {
     next();
 }
 
-router.post('/Consultation/add', verifyToken, async (req, res) => {
+router.post('/add', verifyToken, async (req, res) => {
     try {
         let consultation = new Consultation({
             userId: req.id,
@@ -37,7 +37,7 @@ router.post('/Consultation/add', verifyToken, async (req, res) => {
 
 });
 
-router.get('/Consultation/all', verifyToken, async (req, res) => {
+router.get('/all', verifyToken, async (req, res) => {
     try {
         const consultation = await Consultation.find({ userId: req.id }
         );
@@ -50,6 +50,21 @@ router.get('/Consultation/all', verifyToken, async (req, res) => {
     }
 
 });
+
+router.post('/update', verifyToken, async (req, res) => {
+
+    const consultation = await Consultation.findById({ _id: req.body.id });
+
+    if (req.body.observation != null) {
+        consultation.observation = req.body.observation;
+    }
+    if (req.body.description != null) {
+        consultation.description = req.body.description;
+    }
+    consultation.save();
+    await res.json(consultation);
+});
+
 
 router.delete('/Consultation/delete/:id', (req, res) => {
 
