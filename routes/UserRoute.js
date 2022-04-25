@@ -112,7 +112,7 @@ router.get('/all', async (req, res) => {
 router.post('/giveAccess', verifyToken, async (req, res) => {
     try {
         const us = await U.findById({ _id: req.body.id });
-        const pwd = cryptr.decrypt(newUser[0].password);
+        const pwd = cryptr.decrypt(us.password);
 
         if (req.body.status = null) {
             us.status = req.body.status;
@@ -136,7 +136,7 @@ function sendAccssToPersonalWithEmail(us,pwd){
         auth: {
             user: 'add email adress',
             pass: 'add password'
-        }
+        } 
     });
     
     var mailOptions = {
