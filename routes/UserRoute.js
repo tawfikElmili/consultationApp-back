@@ -111,12 +111,17 @@ router.get('/all', async (req, res) => {
 
 router.post('/giveAccess', verifyToken, async (req, res) => {
     try {
-        const us = await U.findById({ _id: req.id });
+        const us = await U.findById({ _id: req.body.id });
+        const pwd = cryptr.decrypt(newUser[0].password);
 
         if (req.body.status = null) {
             us.status = req.body.status;
         }
         us.save();
+        if(us.status == true) {
+            sendAccssToPersonalWithEmail(us,pwd);
+        }
+    
         await res.json(us);
 
     } catch (error) {
@@ -125,6 +130,31 @@ router.post('/giveAccess', verifyToken, async (req, res) => {
 
 });
 
+function sendAccssToPersonalWithEmail(us,pwd){
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'add email adress',
+            pass: 'add password'
+        }
+    });
+    
+    var mailOptions = {
+        from: 'email address',
+        to: us.email ,
+        subject: 'Access to ConsulationApp',
+        text: 'login : '  + us.email +  '\n password :' + pwd,
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+           
+        }
+    })
+}
+;
 
 
 
