@@ -57,7 +57,6 @@ router.post('/login', async (req, res) => {
 
 // register
 router.post('/register', async (req, res) => {
-console.log(req.body);
     const encryptedPWD = cryptr.encrypt(req.body.password);
     let user = new User({
         firstName: req.body.firstName,
@@ -65,16 +64,15 @@ console.log(req.body);
         email: req.body.email,
         password: encryptedPWD,
         numTel: req.body.numTel,
-        status: req.body.status,
-
+        active: req.body.active,
         role: req.body.role,
     });
     try {
         const newUser = await User.find({ email: req.body.email });
+        console.log(newUser)
+        
         if (newUser === undefined || newUser.length == 0) {
             user = await user.save();
-            
-            console.log("ezebi");
             res.json({ status: "ok", message: 'Account Create ! You can now Login' });
             return;
         }

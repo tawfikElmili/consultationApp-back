@@ -33,12 +33,12 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status: {
+  active: {
     type: Boolean,
     required: true,
   },
 });
 
 
-var User = mongoose.model('User', UserSchema);
+var User = mongoose.model('Users', UserSchema);
 module.exports = User;
