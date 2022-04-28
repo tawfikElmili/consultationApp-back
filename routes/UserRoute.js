@@ -26,7 +26,7 @@ function verifyToken(req, res, next) {
 // login
 router.post('/login', async (req, res) => {
     try {
-
+console.log(req.body)
         const newUser = await User.find({ email: req.body.email }).limit(1);
         const decryptedString = cryptr.decrypt(newUser[0].password);
         if (newUser.length < 1) {
@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
         res.json({ status: "ok", message: 'Welcome Back', UserData: newUser, token });
     } catch (err) {
         res.header("Access-Control-Allow-Headers", "*");
-        res.json({ message: err.message });
+        res.json({status: "err", message: err.message });
     }
 
 });
@@ -57,6 +57,7 @@ router.post('/login', async (req, res) => {
 
 // register
 router.post('/register', async (req, res) => {
+    console.log(req.body)
     const encryptedPWD = cryptr.encrypt(req.body.password);
     let user = new User({
         firstName: req.body.firstName,
