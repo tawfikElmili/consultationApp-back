@@ -16,5 +16,5 @@ var medicationSchema = new mongoose.Schema({
 });
 
 
-var medication = mongoose.model('Medication', medicationSchema);
+var medication = mongoose.model('Medications', medicationSchema);
 module.exports = medication;

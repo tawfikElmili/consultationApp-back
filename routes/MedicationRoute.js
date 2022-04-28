@@ -30,7 +30,7 @@ router.post('/add', verifyToken, async (req, res) => {
         });
         await medication.save();
 
-        res.json({ status: "ok", message: 'Consultation add to DataBase' });
+        res.json({ status: "ok", message: 'medication add to DataBase' });
     } catch (err) {
         res.json({ status: 'err', message: err.message });
     }
