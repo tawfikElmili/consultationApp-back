@@ -110,9 +110,24 @@ router.get('/all', async (req, res) => {
     }
 });
 
+router.get("/url", (req, res, next) => {
+    res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+   });
+router.post('/getAll', async (req, res) => {
+    try {
+        console.log("hello")
+        const users = await User.find();
+        res.json(users);
+        console.log(users)
+    } catch (error) {
+        res.json({ status:'error', message: error.message });
+
+    }
+});
+
 router.post('/giveAccess', verifyToken, async (req, res) => {
     try {
-        const us = await U.findById({ _id: req.body.id });
+        const us = await U.findById({ _id: req.body._id });
         const pwd = cryptr.decrypt(us.password);
 
         if (req.body.status = null) {
