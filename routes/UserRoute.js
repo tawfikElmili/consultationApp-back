@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
 
 // register
 router.post('/register', async (req, res) => {
-console.log(req.body);
+    console.log(req.body);
     const encryptedPWD = cryptr.encrypt(req.body.password);
     let user = new User({
         firstName: req.body.firstName,
@@ -65,16 +65,14 @@ console.log(req.body);
         email: req.body.email,
         password: encryptedPWD,
         numTel: req.body.numTel,
-        status: req.body.status,
-
+        status: false,
+        gender: req.body.gender,
         role: req.body.role,
     });
     try {
         const newUser = await User.find({ email: req.body.email });
         if (newUser === undefined || newUser.length == 0) {
-            user = await user.save();
-            
-            console.log("ezebi");
+            await user.save();
             res.json({ status: "ok", message: 'Account Create ! You can now Login' });
             return;
         }
@@ -118,10 +116,10 @@ router.post('/giveAccess', verifyToken, async (req, res) => {
             us.status = req.body.status;
         }
         us.save();
-        if(us.status == true) {
-            sendAccssToPersonalWithEmail(us,pwd);
+        if (us.status == true) {
+            sendAccssToPersonalWithEmail(us, pwd);
         }
-    
+
         await res.json(us);
 
     } catch (error) {
@@ -130,27 +128,27 @@ router.post('/giveAccess', verifyToken, async (req, res) => {
 
 });
 
-function sendAccssToPersonalWithEmail(us,pwd){
+function sendAccssToPersonalWithEmail(us, pwd) {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
             user: 'add email adress',
             pass: 'add password'
-        } 
+        }
     });
-    
+
     var mailOptions = {
         from: 'email address',
-        to: us.email ,
+        to: us.email,
         subject: 'Access to ConsulationApp',
-        text: 'login : '  + us.email +  '\n password :' + pwd,
+        text: 'login : ' + us.email + '\n password :' + pwd,
     };
-    
-    transporter.sendMail(mailOptions, function(error, info){
+
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error);
         } else {
-           
+
         }
     })
 }
