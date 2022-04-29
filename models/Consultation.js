@@ -5,9 +5,11 @@ var ConsultationSchema = new mongoose.Schema({
     userId: {
         type: String,
     },
-    userAffectId: {
-        type: String,
-    },
+
+    medicationId: [mongoose.Schema.Types.ObjectId],
+
+    userAffectId:[mongoose.Schema.Types.ObjectId],
+
     title: {
         type: String,
     },
