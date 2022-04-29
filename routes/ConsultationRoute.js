@@ -25,7 +25,8 @@ router.post('/add', verifyToken, async (req, res) => {
     try {
         let consultation = new Consultation({
             userId: req.id,
-            observaton: req.body.observaton,
+            title: req.body.title,
+            observaton: req.body.observation,
             description: req.body.description,
         });
          await consultation.save();
