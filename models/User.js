@@ -1,7 +1,12 @@
+
 var mongoose = require('mongoose');
-
+const ObjectId = mongoose.Types.ObjectId;
 var UserSchema = new mongoose.Schema({
-
+  _id: {
+    type: String,
+    default: function () {
+        return new ObjectId().toString()
+    }},
 
   firstName: {
     type: String,

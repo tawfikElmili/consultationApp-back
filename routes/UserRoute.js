@@ -26,7 +26,7 @@ function verifyToken(req, res, next) {
 // login
 router.post('/login', async (req, res) => {
     try {
-
+console.log(req.body)
         const newUser = await User.find({ email: req.body.email }).limit(1);
         const decryptedString = cryptr.decrypt(newUser[0].password);
         if (newUser.length < 1) {
@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
         res.json({ status: "ok", message: 'Welcome Back', UserData: newUser, token });
     } catch (err) {
         res.header("Access-Control-Allow-Headers", "*");
-        res.json({ message: err.message });
+        res.json({status: "err", message: err.message });
     }
 
 });
@@ -57,6 +57,7 @@ router.post('/login', async (req, res) => {
 
 // register
 router.post('/register', async (req, res) => {
+    console.log(req.body)
     const encryptedPWD = cryptr.encrypt(req.body.password);
     let user = new User({
         firstName: req.body.firstName,
@@ -109,9 +110,24 @@ router.get('/all', async (req, res) => {
     }
 });
 
+router.get("/url", (req, res, next) => {
+    res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+   });
+router.post('/getAll', async (req, res) => {
+    try {
+        console.log("hello")
+        const users = await User.find();
+        res.json(users);
+        console.log(users)
+    } catch (error) {
+        res.json({ status:'error', message: error.message });
+
+    }
+});
+
 router.post('/giveAccess', verifyToken, async (req, res) => {
     try {
-        const us = await U.findById({ _id: req.body.id });
+        const us = await U.findById({ _id: req.body._id });
         const pwd = cryptr.decrypt(us.password);
 
         if (req.body.status = null) {
