@@ -26,11 +26,10 @@ function verifyToken(req, res, next) {
 // login
 router.post('/login', async (req, res) => {
     try {
-console.log(req.body)
         const newUser = await User.find({ email: req.body.email }).limit(1);
         const decryptedString = cryptr.decrypt(newUser[0].password);
         if (newUser.length < 1) {
-            await res.json({ status: "err", message: 'Email Does not Exists' });
+            await res.json({ status: "err", message: 'Email Does not Exist' });
             return;
         }
         if (decryptedString !== req.body.password) {
@@ -38,8 +37,8 @@ console.log(req.body)
 
             return;
         }
-        if (newUser[0].enabled === 0) {
-            await res.json({ status: "err", message: 'User is Disabled' });
+        if (newUser[0].status === false) {
+            await res.json({ status: "err", message: 'User is disabled pledase contact hr or check your email' });
             return;
         }
         var payload = {
@@ -57,7 +56,6 @@ console.log(req.body)
 
 // register
 router.post('/register', async (req, res) => {
-    console.log(req.body)
     const encryptedPWD = cryptr.encrypt(req.body.password);
     let user = new User({
         firstName: req.body.firstName,
@@ -66,12 +64,11 @@ router.post('/register', async (req, res) => {
         password: encryptedPWD,
         numTel: req.body.numTel,
         gender: req.body.gender,
-        active: false,
+        status: false,
         role: req.body.role,
     });
     try {
         const newUser = await User.find({ email: req.body.email });
-        console.log(newUser)
         
         if (newUser === undefined || newUser.length == 0) {
             await user.save();
@@ -110,41 +107,47 @@ router.get('/all', async (req, res) => {
     }
 });
 
-router.get("/url", (req, res, next) => {
-    res.json(["Tony","Lisa","Michael","Ginger","Food"]);
-   });
 router.post('/getAll', async (req, res) => {
     try {
-        console.log("hello")
         const users = await User.find();
         res.json(users);
-        console.log(users)
     } catch (error) {
         res.json({ status:'error', message: error.message });
-
     }
 });
 
 router.post('/giveAccess', verifyToken, async (req, res) => {
     try {
-        const us = await U.findById({ _id: req.body._id });
+        console.log("give access")
+        const us = await User.findById({ _id: req.body._id });
         const pwd = cryptr.decrypt(us.password);
-
-        if (req.body.status = null) {
-            us.status = req.body.status;
-        }
+            us.status = !req.body.status;
         us.save();
         if (us.status == true) {
             sendAccssToPersonalWithEmail(us, pwd);
         }
-
         await res.json(us);
 
     } catch (error) {
-
+        res.json({ status:'error', message: error.message });
     }
 
 });
+
+router.post('/update', verifyToken, async (req, res) => {
+    try {
+        console.log("update")
+        const us = await User.findById({ _id: req.body._id });
+            us = req.body;
+        us.save();
+        await res.json(us);
+
+    } catch (error) {
+        res.json({ status:'error', message: error.message });
+    }
+
+});
+
 
 function sendAccssToPersonalWithEmail(us, pwd) {
     var transporter = nodemailer.createTransport({
@@ -168,9 +171,8 @@ function sendAccssToPersonalWithEmail(us, pwd) {
         } else {
 
         }
-    })
+    });
 }
-;
 
 
 

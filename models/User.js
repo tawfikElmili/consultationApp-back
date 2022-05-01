@@ -42,7 +42,7 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  active: {
+  status: {
     type: Boolean,
     required: true,
   },
