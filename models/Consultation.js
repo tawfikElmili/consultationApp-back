@@ -1,27 +1,26 @@
-var mongoose = require('mongoose');
-
+var mongoose = require("mongoose");
+const { ObjectId } = require('mongodb');
 var ConsultationSchema = new mongoose.Schema({
+  _id: ObjectId,
+  userId: {
+    type: String,
+  },
+  medicationIds: [],
+  medicationList: [],
 
-    userId: {
-        type: String,
-    },
-
-    medicationId: [mongoose.Schema.Types.ObjectId],
-
-    userAffectId:[mongoose.Schema.Types.ObjectId],
-
-    title: {
-        type: String,
-    },
-    observation: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-
+  userAffectId: {
+    type: String,
+  },
+  title: {
+    type: String,
+  },
+  observation: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
 });
 
-
-var Consultation = mongoose.model('Consultation', ConsultationSchema);
+var Consultation = mongoose.model("consultation", ConsultationSchema);
 module.exports = Consultation;

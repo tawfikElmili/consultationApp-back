@@ -15,13 +15,13 @@ app.use('/api/consultation', consultationRoutes);
 app.use('/api/medication', medicationRoutes);
 app.options('*', cors());
 
-mongoose.connect('mongodb://127.0.0.1:27017/consultationDb',
+mongoose.connect('mongodb://127.0.0.1:27017/bteHealthDb',
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
     },(err) => {
       if(err) console.log(err) 
-      else console.log("mongoDb is connected to Database");
+      else console.log("mongoDb is connected to bteHealthDb");
      }
    );
 

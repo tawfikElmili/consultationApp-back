@@ -1,13 +1,8 @@
 
+const { ObjectId } = require('mongodb');
 var mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
 var UserSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: function () {
-        return new ObjectId().toString()
-    }},
-
+  _id: ObjectId,
   firstName: {
     type: String,
     unique: true,
@@ -49,5 +44,5 @@ var UserSchema = new mongoose.Schema({
 });
 
 
-var User = mongoose.model('Users', UserSchema);
+var User = mongoose.model('user', UserSchema);
 module.exports = User;
