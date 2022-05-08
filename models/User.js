@@ -1,25 +1,27 @@
-
-const { ObjectId } = require('mongodb');
-var mongoose = require('mongoose');
-var UserSchema = new mongoose.Schema({
-  _id: ObjectId,
+const { ObjectId } = require("mongodb");
+var mongoose = require("mongoose");
+var AutoIncrement = require("mongoose-sequence")(mongoose);
+var userSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+  },
   firstName: {
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
   },
   lastName: {
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
   },
-    email: {
+  email: {
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
   },
   password: {
     type: String,
@@ -43,6 +45,7 @@ var UserSchema = new mongoose.Schema({
   },
 });
 
+userSchema.plugin(AutoIncrement, { id: "id_seq3", inc_field: "id" });
 
-var User = mongoose.model('user', UserSchema);
+var User = mongoose.model("user", userSchema);
 module.exports = User;

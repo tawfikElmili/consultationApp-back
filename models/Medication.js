@@ -1,18 +1,20 @@
 var mongoose = require("mongoose");
-const { ObjectId } = require('mongodb');
+var AutoIncrement = require('mongoose-sequence')(mongoose);
 var medicationSchema = new mongoose.Schema({
-  _id: ObjectId,
+  id: {
+    type: Number,
+  },
   consultationId: {
-    type: String,
+    type: Number,
   },
 
   designation: {
     type: String,
   },
-  note: {
+  note: { 
     type: String,
   },
 });
-
+medicationSchema.plugin(AutoIncrement, {id:'id_seq2',inc_field: 'id'});
 var medication = mongoose.model("medication", medicationSchema);
 module.exports = medication;

@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require("../models/User");
 var jwt = require("jsonwebtoken");
 const Cryptr = require("cryptr");
-const { ObjectId } = require("mongodb");
 const cryptr = new Cryptr("myTotalySecretKey");
 
 function verifyToken(req, res, next) {
@@ -12,7 +11,7 @@ function verifyToken(req, res, next) {
     return res.status(401).send("Unauthorized request");
   }
   try {
-    payload = jwt.verify(req.query.token, "fakroun");
+    payload = jwt.verify(req.query.token, "bte_HealthApp_Pfe_Oumayma");
   } catch (e) {
     return res.status(400).send("Invalid User");
   }
@@ -48,9 +47,9 @@ router.post("/login", async (req, res) => {
       return;
     }
     var payload = {
-      id: newUser[0]._id,
+      id: newUser[0].id,
     };
-    let token = jwt.sign(payload, "fakroun");
+    let token = jwt.sign(payload, "bte_HealthApp_Pfe_Oumayma");
     res.json({
       status: "ok",
       message: "Welcome Back",
@@ -67,7 +66,6 @@ router.post("/login", async (req, res) => {
 router.post("/register", async (req, res) => {
   const encryptedPWD = cryptr.encrypt(req.body.password);
   let user = new User({
-    _id : new ObjectId(),
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
@@ -122,11 +120,18 @@ router.post("/getAll", async (req, res) => {
     res.json({ status: "error", message: error.message });
   }
 });
+router.post("/getById", async (req, res) => {
+  try {
+    const us = await User.findById({ id: req.body.id });
+    res.json(us);
+  } catch (error) {
+    res.json({ status: "error", message: error.message });
+  }
+});
 
 router.post("/giveAccess", verifyToken, async (req, res) => {
   try {
-    console.log("give access");
-    const us = await User.findById({ _id: req.body._id });
+    const us = await User.findById({ id: req.body.id });
     const pwd = cryptr.decrypt(us.password);
     us.status = !req.body.status;
     us.save();
@@ -142,10 +147,8 @@ router.post("/giveAccess", verifyToken, async (req, res) => {
 router.post("/update", verifyToken, async (req, res) => {
   try {
       
-    console.log("update");
-    console.log(req.id)
-    const us = await User.findById({ _id: req.id });
-    console.log("user is", us);
+    const us = await User.findById({ id: req.body.id });
+    // console.log("user is", us);
     if (req.body.firstName != null) {
       us.firstName = req.body.firstName;
     }
@@ -159,13 +162,23 @@ router.post("/update", verifyToken, async (req, res) => {
     if (req.body.email != null) {
       us.email = req.body.email;
     }
-    console.log("user After save", us);
+    // console.log("user After save", us);
     us.save();
 
     res.json(us);
   } catch (err) {
     res.json({ status: "err", message: err.message });
   }
+});
+
+router.delete("/delete/:id", (req, res) => {
+  User.findByIdAndRemove(req.params.id).then((user) => {
+    if (!user) {
+      return res.status(404).send({
+        message: " error in update with id : " + req.params.id,
+      });
+    }
+  });
 });
 
 function sendAccssToPersonalWithEmail(us, pwd) {
@@ -186,7 +199,7 @@ function sendAccssToPersonalWithEmail(us, pwd) {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
+      // console.log(error);
     } else {
     }
   });

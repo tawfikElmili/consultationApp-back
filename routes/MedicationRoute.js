@@ -9,7 +9,7 @@ function verifyToken(req, res, next) {
     return res.status(401).send("Unauthorized request");
   }
   try {
-    payload = jwt.verify(req.query.token, "fakroun");
+    payload = jwt.verify(req.query.token, "bte_HealthApp_Pfe_Oumayma");
   } catch (e) {
     return res.status(400).send("Invalid User");
   }
@@ -26,7 +26,6 @@ function verifyToken(req, res, next) {
 router.post("/add", verifyToken, async (req, res) => {
   try {
     let medication = new Medication({
-      _id: new ObjectId(),
       consultationId: req.body.consultationId,
       designation: req.body.designation,
       note: req.body.note,
@@ -39,10 +38,10 @@ router.post("/add", verifyToken, async (req, res) => {
   }
 });
 
-router.post("/all", verifyToken, async (req, res) => {
+router.get("/getByConsultation/:id", verifyToken, async (req, res) => {
   try {
     const medications = await Medication.find({
-      consultationId: req.body.consultationId,
+      consultationId: req.param.consultationId,
     });
     res.json(medications);
   } catch (err) {
@@ -52,7 +51,7 @@ router.post("/all", verifyToken, async (req, res) => {
 
 router.post("/update", verifyToken, async (req, res) => {
   try {
-    const medication = await Medications.findById({ _id: req.body.id });
+    const medication = await Medication.findById({ id: req.body.id });
 
     if (req.body.designation != null) {
       consultation.designation = req.body.designation;

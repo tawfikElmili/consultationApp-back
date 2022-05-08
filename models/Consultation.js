@@ -1,15 +1,14 @@
 var mongoose = require("mongoose");
-const { ObjectId } = require('mongodb');
-var ConsultationSchema = new mongoose.Schema({
-  _id: ObjectId,
+var AutoIncrement = require('mongoose-sequence')(mongoose);
+var consultationSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: Number,
   },
+  id : {type:Number},
   medicationIds: [],
   medicationList: [],
-
   userAffectId: {
-    type: String,
+    type: Number,
   },
   title: {
     type: String,
@@ -21,6 +20,6 @@ var ConsultationSchema = new mongoose.Schema({
     type: String,
   },
 });
-
-var Consultation = mongoose.model("consultation", ConsultationSchema);
+consultationSchema.plugin(AutoIncrement, {id:'id_seq1',inc_field: 'id'});
+var Consultation = mongoose.model("consultation", consultationSchema);
 module.exports = Consultation;

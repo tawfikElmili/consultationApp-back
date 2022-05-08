@@ -3,7 +3,7 @@ const router = express.Router();
 const Consultation = require("../models/Consultation");
 const Medication = require("../models/Medication");
 var jwt = require("jsonwebtoken");
-const medication = require("../models/Medication");
+const User = require("../models/User");
 
 function verifyToken(req, res, next) {
   let payload;
@@ -11,7 +11,7 @@ function verifyToken(req, res, next) {
     return res.status(401).send("Unauthorized request");
   }
   try {
-    payload = jwt.verify(req.query.token, "fakroun");
+    payload = jwt.verify(req.query.token, "bte_HealthApp_Pfe_Oumayma");
   } catch (e) {
     return res.status(400).send("Invalid User");
   }
@@ -28,7 +28,6 @@ function verifyToken(req, res, next) {
 router.post("/add", verifyToken, async (req, res) => {
   try {
     let consultation = new Consultation({
-      _id: new ObjectId(),
       userId: req.id,
       userAffectId: req.body.userAffectId,
       title: req.body.title,
@@ -39,7 +38,7 @@ router.post("/add", verifyToken, async (req, res) => {
     req.body.medicationList.forEach((element) => {
       try {
         let medication = new Medication({
-          consultationId: String(consultation._id),
+          consultationId: consultation.id,
           designation: element.designation,
           note: element.note,
         });
@@ -47,13 +46,6 @@ router.post("/add", verifyToken, async (req, res) => {
       } catch (err) {
         console.log(err.message);
       }
-    });
-
-    const med = await Medication.find({
-      consultationId: String(medication._id),
-    });
-    med.forEach((item) => {
-      consultation.medicationIds.push(item._id);
     });
 
     res.json(consultation);
@@ -64,17 +56,23 @@ router.post("/add", verifyToken, async (req, res) => {
 
 router.post("/getAll", verifyToken, async (req, res) => {
   try {
-    const consultation = await Consultation.find({ userId: req.id });
+    console.log(req.body);
+    let consultation;
+    if (req.body.role === "DOCTOR") {
+      consultation = await Consultation.find({ userId: req.body.id });
+    } else {
+      consultation = await Consultation.find({ userAffectId: req.body.id });
+    }
+    console.log(consultation);
     res.json(consultation);
   } catch (err) {
     res.json({ message: err.message });
   }
 });
 
-router.post("/getById", verifyToken, async (req, res) => {
+router.get("/getById/:id", verifyToken, async (req, res) => {
   try {
-    const consultation = await Consultation.findOne({ _id: req.body.id });
-
+    const consultation = await Consultation.findOne({ id: req.params.id });
     res.json(consultation);
   } catch (err) {
     res.json({ message: err.message });
@@ -82,7 +80,7 @@ router.post("/getById", verifyToken, async (req, res) => {
 });
 
 router.post("/update", verifyToken, async (req, res) => {
-  const consultation = await Consultation.findById({ _id: req.body.id });
+  const consultation = await Consultation.findById({ id: req.body.id });
 
   if (req.body.observation != null) {
     consultation.observation = req.body.observation;
@@ -94,11 +92,11 @@ router.post("/update", verifyToken, async (req, res) => {
   await res.json(consultation);
 });
 
-router.delete("/Consultation/delete/:id", (req, res) => {
-  Consultation.findByIdAndRemove(req.params.id).then((consultation) => {
+router.delete("/delete/:id", (req, res) => {
+  Consultation.findOneAndRemove({ id: req.params.id }).then((consultation) => {
     if (!consultation) {
       return res.status(404).send({
-        message: "sensor not found with code " + req.params.id,
+        message: "consultation not found with id " + req.params.id,
       });
     }
   });
