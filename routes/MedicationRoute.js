@@ -40,9 +40,12 @@ router.post("/add", verifyToken, async (req, res) => {
 
 router.get("/getByConsultation/:id", verifyToken, async (req, res) => {
   try {
+    
+    console.log(req.params.id)
     const medications = await Medication.find({
-      consultationId: req.param.consultationId,
+      consultationId: req.params.consultationId,
     });
+    console.log("all medication",medications)
     res.json(medications);
   } catch (err) {
     res.json({ message: err.message });

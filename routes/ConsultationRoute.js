@@ -80,9 +80,12 @@ router.get("/getById/:id", verifyToken, async (req, res) => {
 });
 
 router.post("/update", verifyToken, async (req, res) => {
-  const consultation = await Consultation.findById({ id: req.body.id });
+  try {
+  const consultation = await Consultation.findOne({ id: req.body.id });
 
-  if (req.body.observation != null) {
+  if (req.body.title != null) {
+    consultation.title = req.body.title;
+  }if (req.body.observation != null) {
     consultation.observation = req.body.observation;
   }
   if (req.body.description != null) {
@@ -90,6 +93,9 @@ router.post("/update", verifyToken, async (req, res) => {
   }
   consultation.save();
   await res.json(consultation);
+} catch (err) {
+  res.json({ status: "err", message: err.message });
+}
 });
 
 router.delete("/delete/:id", (req, res) => {

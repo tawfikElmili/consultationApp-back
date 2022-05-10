@@ -72,7 +72,7 @@ router.post("/register", async (req, res) => {
     password: encryptedPWD,
     numTel: req.body.numTel,
     gender: req.body.gender,
-    status: false,
+    status: true,
     role: req.body.role,
   });
   try {
@@ -146,9 +146,7 @@ router.post("/giveAccess", verifyToken, async (req, res) => {
 
 router.post("/update", verifyToken, async (req, res) => {
   try {
-      
-    const us = await User.findById({ id: req.body.id });
-    // console.log("user is", us);
+    const us = await User.findOne({ id: req.body.id });
     if (req.body.firstName != null) {
       us.firstName = req.body.firstName;
     }
@@ -162,10 +160,9 @@ router.post("/update", verifyToken, async (req, res) => {
     if (req.body.email != null) {
       us.email = req.body.email;
     }
-    // console.log("user After save", us);
     us.save();
 
-    res.json(us);
+    await res.json(us);
   } catch (err) {
     res.json({ status: "err", message: err.message });
   }
