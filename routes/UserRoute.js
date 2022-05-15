@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
     if (newUser[0].status === false) {
       await res.json({
         status: "err",
-        message: "User is disabled pledase contact hr or check your email",
+        message: "User is disabled please contact hr or check your email",
       });
       return;
     }
@@ -72,7 +72,7 @@ router.post("/register", async (req, res) => {
     password: encryptedPWD,
     numTel: req.body.numTel,
     gender: req.body.gender,
-    status: true,
+    status: false,
     role: req.body.role,
   });
   try {
@@ -182,13 +182,13 @@ function sendAccssToPersonalWithEmail(us, pwd) {
   var transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "add email adress",
+      user: "ouerfelli.oumaima.9@gmail.com",
       pass: "add password",
     },
   });
 
   var mailOptions = {
-    from: "email address",
+    from: "ouerfelli.oumaima.9@gmail.com",
     to: us.email,
     subject: "Access to ConsulationApp",
     text: "login : " + us.email + "\n password :" + pwd,

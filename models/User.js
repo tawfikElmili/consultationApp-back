@@ -48,4 +48,5 @@ var userSchema = new mongoose.Schema({
 userSchema.plugin(AutoIncrement, { id: "id_seq3", inc_field: "id" });
 
 var User = mongoose.model("user", userSchema);
+console.log(y=userSchema)
 module.exports = User;
