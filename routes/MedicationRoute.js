@@ -40,10 +40,8 @@ router.post("/add", verifyToken, async (req, res) => {
 
 router.get("/getByConsultation/:id", verifyToken, async (req, res) => {
   try {
-    
-    console.log(req.params.id)
     const medications = await Medication.find({
-      consultationId: req.params.consultationId,
+      consultationId: req.params.id,
     });
     console.log("all medication",medications)
     res.json(medications);
@@ -69,11 +67,11 @@ router.post("/update", verifyToken, async (req, res) => {
   }
 });
 
-router.delete("/Consultation/delete/:id", (req, res) => {
+router.delete("/medictaion/delete/:id", (req, res) => {
   Medication.findByIdAndRemove(req.params.id).then((medication) => {
     if (!medication) {
       return res.status(404).send({
-        message: " error in update with id : " + req.params.id,
+        message: " error in delete with id : " + req.params.id,
       });
     }
   });

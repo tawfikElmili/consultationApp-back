@@ -91,7 +91,6 @@ router.post("/register", async (req, res) => {
     res.json({ message: err.message });
   }
 });
-
 //find by email
 router.get("/:email", async (req, res) => {
   try {

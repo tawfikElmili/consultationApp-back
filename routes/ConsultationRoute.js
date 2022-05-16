@@ -56,7 +56,6 @@ router.post("/add", verifyToken, async (req, res) => {
 
 router.post("/getAll", verifyToken, async (req, res) => {
   try {
-    console.log(req.body);
     let consultation;
     if (req.body.role === "DOCTOR") {
       consultation = await Consultation.find({ userId: req.body.id });
