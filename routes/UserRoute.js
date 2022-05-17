@@ -5,6 +5,8 @@ var jwt = require("jsonwebtoken");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr("myTotalySecretKey");
 
+// hedhi 3amlinha bech na3mlou verification lel token eli 3ana w
+// nthayabtou eli 3andou el 7a9 yod5el lel app wala le wala 3andou el yesta3mel el api
 function verifyToken(req, res, next) {
   let payload;
   if (req.query.token === "null") {
@@ -25,7 +27,7 @@ function verifyToken(req, res, next) {
   next();
 }
 
-// login
+// hedhi lel login 
 router.post("/login", async (req, res) => {
   try {
     const newUser = await User.find({ email: req.body.email }).limit(1);
@@ -62,7 +64,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// register
+// hedhi ki bech ya3mel compte
 router.post("/register", async (req, res) => {
   const encryptedPWD = cryptr.encrypt(req.body.password);
   let user = new User({
@@ -91,17 +93,9 @@ router.post("/register", async (req, res) => {
     res.json({ message: err.message });
   }
 });
-//find by email
-router.get("/:email", async (req, res) => {
-  try {
-    const post = await User.findById(req.params.email);
-    res.json(post);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
 
-router.get("/all", async (req, res) => {
+// hedhi tjib liste users  eli fel consultation (fropdown list) eli bech na3mloulha affecatation
+router.get("/getAllSelectList", async (req, res) => {
   try {
     const users = await User.find();
     users.filter((u) => u.status === true && u.role === "Personnel");
@@ -111,6 +105,7 @@ router.get("/all", async (req, res) => {
   }
 });
 
+// hedhi tjib el el users el kol
 router.post("/getAll", async (req, res) => {
   try {
     const users = await User.find();
@@ -119,6 +114,7 @@ router.post("/getAll", async (req, res) => {
     res.json({ status: "error", message: error.message });
   }
 });
+// hedhi tjib el user by id
 router.post("/getById", async (req, res) => {
   try {
     const us = await User.findById({ id: req.body.id });
@@ -128,24 +124,26 @@ router.post("/getById", async (req, res) => {
   }
 });
 
+// hedhi function akeli tbadel status w ta3mel anbel w disable w feha el email
 router.post("/giveAccess", verifyToken, async (req, res) => {
   try {
     console.log("am here")
-    const us = await User.findOne({ id: req.body.id });
-    const pwd = cryptr.decrypt(us.password);
-    console.log("us.status",us.status);
+    const user = await User.findOne({ id: req.body.id });
+    const pwd = cryptr.decrypt(user.password);
+    console.log("user.status",user.status);
     console.log("req.body.status",req.body.status);
-    us.status = !req.body.status;
-    us.save();
-    if (us.status == true) {
-      sendAccssToPersonalWithEmail(us, pwd);
+    user.status = !req.body.status;
+    user.save();
+    if (user.status == true) {
+      sendAccssToPersonalWithEmail(user, pwd);
     }
-    await res.json(us);
+    await res.json(user);
   } catch (error) {
     res.json({ status: "error", message: error.message });
   }
 });
 
+// hedhi elel update
 router.post("/update", verifyToken, async (req, res) => {
   try {
     const us = await User.findOne({ id: req.body.id });
@@ -169,7 +167,7 @@ router.post("/update", verifyToken, async (req, res) => {
     res.json({ status: "err", message: err.message });
   }
 });
-
+// hedhi delete
 router.delete("/delete/:id", (req, res) => {
   User.findByIdAndRemove(req.params.id).then((user) => {
     if (!user) {
@@ -180,7 +178,8 @@ router.delete("/delete/:id", (req, res) => {
   });
 });
 
-function sendAccssToPersonalWithEmail(us, pwd) {
+// hedhi eli tab3ath email 3amlinilha apl elfou9 5demtha elouta bech nest7a9ha elfou9 w be3thlha params user w password
+function sendAccssToPersonalWithEmail(user, pwd) {
   var transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -191,9 +190,9 @@ function sendAccssToPersonalWithEmail(us, pwd) {
 
   var mailOptions = {
     from: "ouerfelli.oumaima.9@gmail.com",
-    to: us.email,
+    to: user.email,
     subject: "Access to ConsulationApp",
-    text: "login : " + us.email + "\n password :" + pwd,
+    text: "login : " + user.email + "\n password :" + pwd,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
