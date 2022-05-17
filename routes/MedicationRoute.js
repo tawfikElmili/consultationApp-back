@@ -52,7 +52,7 @@ router.get("/getByConsultation/:id", verifyToken, async (req, res) => {
 
 router.post("/update", verifyToken, async (req, res) => {
   try {
-    const medication = await Medication.findById({ id: req.body.id });
+    const medication = await Medication.findOne({ id: req.body.id });
 
     if (req.body.designation != null) {
       consultation.designation = req.body.designation;

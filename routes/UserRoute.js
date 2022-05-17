@@ -130,8 +130,11 @@ router.post("/getById", async (req, res) => {
 
 router.post("/giveAccess", verifyToken, async (req, res) => {
   try {
-    const us = await User.findById({ id: req.body.id });
+    console.log("am here")
+    const us = await User.findOne({ id: req.body.id });
     const pwd = cryptr.decrypt(us.password);
+    console.log("us.status",us.status);
+    console.log("req.body.status",req.body.status);
     us.status = !req.body.status;
     us.save();
     if (us.status == true) {
