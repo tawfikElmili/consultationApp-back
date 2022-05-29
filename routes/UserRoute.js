@@ -5,8 +5,6 @@ var jwt = require("jsonwebtoken");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr("myTotalySecretKey");
 
-// hedhi 3amlinha bech na3mlou verification lel token eli 3ana w
-// nthayabtou eli 3andou el 7a9 yod5el lel app wala le wala 3andou el yesta3mel el api
 function verifyToken(req, res, next) {
   let payload;
   if (req.query.token === "null") {
@@ -27,7 +25,6 @@ function verifyToken(req, res, next) {
   next();
 }
 
-// hedhi lel login 
 router.post("/login", async (req, res) => {
   try {
     const newUser = await User.find({ email: req.body.email }).limit(1);
@@ -64,7 +61,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// hedhi ki bech ya3mel compte
 router.post("/register", async (req, res) => {
   const encryptedPWD = cryptr.encrypt(req.body.password);
   let user = new User({
@@ -94,7 +90,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// hedhi tjib liste users  eli fel consultation (fropdown list) eli bech na3mloulha affecatation
 router.get("/getAllSelectList", async (req, res) => {
   try {
     const users = await User.find();
@@ -105,7 +100,6 @@ router.get("/getAllSelectList", async (req, res) => {
   }
 });
 
-// hedhi tjib el el users el kol
 router.post("/getAll", async (req, res) => {
   try {
     const users = await User.find();
@@ -114,7 +108,6 @@ router.post("/getAll", async (req, res) => {
     res.json({ status: "error", message: error.message });
   }
 });
-// hedhi tjib el user by id
 router.post("/getById", async (req, res) => {
   try {
     const us = await User.findById({ id: req.body.id });
@@ -124,7 +117,6 @@ router.post("/getById", async (req, res) => {
   }
 });
 
-// hedhi function akeli tbadel status w ta3mel anbel w disable w feha el email
 router.post("/giveAccess", verifyToken, async (req, res) => {
   try {
     console.log("am here")
@@ -143,7 +135,6 @@ router.post("/giveAccess", verifyToken, async (req, res) => {
   }
 });
 
-// hedhi elel update
 router.post("/update", verifyToken, async (req, res) => {
   try {
     const us = await User.findOne({ id: req.body.id });
@@ -178,7 +169,6 @@ router.delete("/delete/:id", (req, res) => {
   });
 });
 
-// hedhi eli tab3ath email 3amlinilha apl elfou9 5demtha elouta bech nest7a9ha elfou9 w be3thlha params user w password
 function sendAccssToPersonalWithEmail(user, pwd) {
   var transporter = nodemailer.createTransport({
     service: "Gmail",
